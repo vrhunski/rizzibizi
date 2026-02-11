@@ -118,7 +118,7 @@ const ResultsScreen: React.FC<Props> = ({ session, onRestart }) => {
     const a = document.createElement('a');
     const date = new Date().toISOString().split('T')[0];
     a.href = url;
-    a.download = `InterviewMaster_Cheatsheet_${session.difficulty.replace(/\s+/g, '_')}_${date}.md`;
+    a.download = `RizziBizzi_Cheatsheet_${session.difficulty.replace(/\s+/g, '_')}_${date}.md`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

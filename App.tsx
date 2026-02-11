@@ -57,7 +57,7 @@ const App: React.FC = () => {
             <div className="bg-indigo-600 p-2 rounded-lg">
               <GraduationCap className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Interview<span className="text-indigo-600">Master</span> AI</h1>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Rizzi<span className="text-indigo-600">Bizzi</span></h1>
           </div>
           <div className="flex items-center gap-4">
             <span className="hidden sm:inline text-sm text-slate-500 font-medium">Daily Prep Challenge</span>
@@ -97,7 +97,7 @@ const App: React.FC = () => {
       <footer className="bg-white border-t border-slate-200 py-6 mt-auto">
         <div className="max-w-5xl mx-auto px-4 text-center">
           <p className="text-sm text-slate-500">
-            &copy; {new Date().getFullYear()} InterviewMaster AI. Master your technical interviews with custom AI-generated quizzes.
+            &copy; {new Date().getFullYear()} RizziBizzi AI. Master your technical interviews with custom AI-generated quizzes.
           </p>
         </div>
       </footer>
