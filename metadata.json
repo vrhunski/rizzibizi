@@ -1,0 +1,5 @@
+{
+  "name": "InterviewMaster AI",
+  "description": "A technical interview preparation tool that generates daily AI-powered quizzes based on your own Markdown study materials. Get detailed explanations and code examples to master complex IT topics.",
+  "requestFramePermissions": []
+}
