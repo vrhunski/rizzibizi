@@ -86,9 +86,9 @@ const SetupScreen: React.FC<Props> = ({ onStart }) => {
   };
 
   const difficultyOptions = [
-    { level: DifficultyLevel.JUNIOR, icon: <Baby className="w-4 h-4" />, desc: "Focus on basics" },
-    { level: DifficultyLevel.MEDIUM, icon: <Briefcase className="w-4 h-4" />, desc: "Focus on application" },
-    { level: DifficultyLevel.SENIOR, icon: <Zap className="w-4 h-4" />, desc: "Focus on architecture" },
+    { level: DifficultyLevel.JUNIOR, icon: <Baby className="w-4 h-4" />, desc: "Basics focus" },
+    { level: DifficultyLevel.MEDIUM, icon: <Briefcase className="w-4 h-4" />, desc: "Application focus" },
+    { level: DifficultyLevel.SENIOR, icon: <Zap className="w-4 h-4" />, desc: "Architecture focus" },
   ];
 
   const questionCounts = [5, 10, 15, 20];
@@ -96,39 +96,38 @@ const SetupScreen: React.FC<Props> = ({ onStart }) => {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="text-center space-y-4">
-        <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
-          Welcome to RizziBizzi
+        <h2 className="text-3xl font-extrabold text-slate-800 sm:text-4xl">
+          Quiet Your Mind, Focus Your Prep
         </h2>
-        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-          Turn your notes into a personalized interview simulation. RizziBizzi analyzes your Markdown files to build high-quality technical challenges.
+        <p className="text-lg text-slate-500 max-w-2xl mx-auto">
+          Turn your notes into a serene interview simulation. RizziBizzi analyzes your Markdown to build tailored challenges.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-3xl border border-emerald-100 shadow-sm overflow-hidden">
             <div className="p-6 sm:p-8 space-y-8">
               {/* Step 1: Source Section */}
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-indigo-500" />
-                    Step 1: Source Material
+                  <h3 className="text-lg font-semibold text-slate-700 flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-emerald-600" />
+                    1. Study Material
                   </h3>
                   <div className="flex gap-2 w-full sm:w-auto">
                     <button 
                       onClick={resetToExample}
-                      className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors text-sm font-medium"
-                      title="Load Default Example"
+                      className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-emerald-100 rounded-xl text-emerald-700 hover:bg-emerald-50 transition-colors text-xs font-bold"
                     >
-                      <RefreshCw className="w-4 h-4" />
-                      Load Example
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      Reset
                     </button>
                     <button 
                       onClick={() => fileInputRef.current?.click()}
-                      className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors text-sm font-medium"
+                      className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-emerald-700 rounded-xl text-white hover:bg-emerald-800 transition-colors text-xs font-bold shadow-md shadow-emerald-100"
                     >
-                      <Upload className="w-4 h-4" />
+                      <Upload className="w-3.5 h-3.5" />
                       Upload .md
                     </button>
                   </div>
@@ -145,48 +144,40 @@ const SetupScreen: React.FC<Props> = ({ onStart }) => {
                   <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    placeholder="Paste your markdown content here or upload a file..."
-                    className="w-full h-80 p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all font-mono text-sm text-slate-800 resize-none outline-none"
+                    placeholder="Paste your notes here..."
+                    className="w-full h-80 p-6 bg-emerald-50/20 border border-emerald-100 rounded-2xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-mono text-sm text-slate-700 resize-none outline-none"
                   />
-                  {content.length === 0 && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 group-hover:opacity-30 transition-opacity">
-                      <FileText className="w-24 h-24" />
-                    </div>
-                  )}
                 </div>
               </div>
 
               {/* Step 2: Difficulty Selection */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-indigo-500" />
-                  Step 2: Select Difficulty Level
+                <h3 className="text-lg font-semibold text-slate-700 flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-emerald-600" />
+                  2. Targeted Depth
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {difficultyOptions.map((opt) => (
                     <button
                       key={opt.level}
                       onClick={() => setDifficulty(opt.level)}
-                      className={`relative p-5 text-left border-2 rounded-xl transition-all ${
+                      className={`relative p-5 text-left border-2 rounded-2xl transition-all ${
                         difficulty === opt.level
-                          ? 'border-indigo-500 bg-indigo-50 shadow-md ring-2 ring-indigo-100'
-                          : 'border-slate-100 hover:border-slate-300 bg-white'
+                          ? 'border-emerald-600 bg-emerald-50/50 ring-4 ring-emerald-50'
+                          : 'border-emerald-50 hover:border-emerald-200 bg-white'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className={`p-2 rounded-lg ${
-                          difficulty === opt.level ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-500'
+                          difficulty === opt.level ? 'bg-emerald-700 text-white' : 'bg-emerald-50 text-emerald-500'
                         }`}>
                           {opt.icon}
                         </div>
-                        {difficulty === opt.level && (
-                          <div className="w-4 h-4 rounded-full bg-indigo-500 border-2 border-white"></div>
-                        )}
                       </div>
-                      <div className={`font-bold ${difficulty === opt.level ? 'text-indigo-900' : 'text-slate-800'}`}>
+                      <div className={`font-bold ${difficulty === opt.level ? 'text-emerald-900' : 'text-slate-600'}`}>
                         {opt.level}
                       </div>
-                      <div className={`text-xs mt-1 ${difficulty === opt.level ? 'text-indigo-600' : 'text-slate-400'}`}>
+                      <div className={`text-[10px] uppercase tracking-wider font-bold mt-1 ${difficulty === opt.level ? 'text-emerald-600' : 'text-slate-400'}`}>
                         {opt.desc}
                       </div>
                     </button>
@@ -196,9 +187,9 @@ const SetupScreen: React.FC<Props> = ({ onStart }) => {
 
               {/* Step 3: Question Count */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                  <ListOrdered className="w-5 h-5 text-indigo-500" />
-                  Step 3: Number of Questions
+                <h3 className="text-lg font-semibold text-slate-700 flex items-center gap-2">
+                  <ListOrdered className="w-5 h-5 text-emerald-600" />
+                  3. Session Length
                 </h3>
                 <div className="flex flex-wrap gap-3">
                   {questionCounts.map((count) => (
@@ -207,8 +198,8 @@ const SetupScreen: React.FC<Props> = ({ onStart }) => {
                       onClick={() => setQuestionCount(count)}
                       className={`flex-1 min-w-[60px] py-3 px-4 rounded-xl font-bold border-2 transition-all ${
                         questionCount === count
-                          ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-sm'
-                          : 'border-slate-100 text-slate-500 hover:border-slate-200 bg-white'
+                          ? 'border-emerald-600 bg-emerald-50 text-emerald-800'
+                          : 'border-emerald-50 text-slate-400 hover:border-emerald-100 bg-white'
                       }`}
                     >
                       {count}
@@ -217,24 +208,17 @@ const SetupScreen: React.FC<Props> = ({ onStart }) => {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-4 bg-indigo-50 rounded-xl text-indigo-800 text-sm">
-                <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                <p>
-                  <strong>Tip:</strong> RizziBizzi works best with structured notes including headings, bullet points, and code snippets.
-                </p>
-              </div>
-
               <button
                 onClick={() => onStart(content, difficulty, questionCount)}
                 disabled={!content.trim()}
-                className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-lg ${
+                className={`w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl ${
                   content.trim() 
-                    ? 'bg-indigo-600 text-white hover:bg-indigo-700 hover:-translate-y-0.5 shadow-indigo-200' 
+                    ? 'bg-emerald-700 text-white hover:bg-emerald-800 hover:-translate-y-0.5 shadow-emerald-200/50' 
                     : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
                 }`}
               >
-                <Play className="w-6 h-6 fill-current" />
-                Generate {questionCount} Question {difficulty} Test
+                <Play className="w-5 h-5 fill-current" />
+                Begin Session
               </button>
             </div>
           </div>
@@ -242,56 +226,42 @@ const SetupScreen: React.FC<Props> = ({ onStart }) => {
 
         {/* Instructions Sidebar */}
         <div className="space-y-6">
-          <div className="bg-slate-900 rounded-2xl p-6 text-white shadow-xl">
+          <div className="bg-[#2d3d36] rounded-3xl p-6 text-emerald-50 shadow-xl border border-emerald-900/20">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-indigo-600 rounded-lg">
+              <div className="p-2 bg-emerald-600 rounded-xl">
                 <BookOpenCheck className="w-5 h-5" />
               </div>
-              <h3 className="font-bold text-lg">Pro Markdown Structure</h3>
+              <h3 className="font-bold text-lg">Markdown Guide</h3>
             </div>
             
-            <div className="space-y-5">
-              <div className="space-y-2">
-                <h4 className="text-indigo-400 text-xs font-bold uppercase tracking-widest">1. Use Clear Headings</h4>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Start sections with <code className="text-slate-200 bg-white/10 px-1 rounded">## Topic Name</code>. This helps the AI identify key study areas.
+            <div className="space-y-6">
+              <div className="space-y-1">
+                <h4 className="text-emerald-400 text-[10px] font-black uppercase tracking-widest">Structural Clarity</h4>
+                <p className="text-emerald-50/60 text-xs leading-relaxed">
+                  Use <code className="text-emerald-200 bg-white/5 px-1 rounded">## Headings</code> to group related technical concepts.
                 </p>
               </div>
               
-              <div className="space-y-2">
-                <h4 className="text-indigo-400 text-xs font-bold uppercase tracking-widest">2. Detailed Descriptions</h4>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Provide 2-3 sentences per concept. The more context you provide, the deeper the questions will be.
+              <div className="space-y-1">
+                <h4 className="text-emerald-400 text-[10px] font-black uppercase tracking-widest">Practical Context</h4>
+                <p className="text-emerald-50/60 text-xs leading-relaxed">
+                  Describe <strong>why</strong> a technology is used, not just what it is.
                 </p>
               </div>
               
-              <div className="space-y-2">
-                <h4 className="text-indigo-400 text-xs font-bold uppercase tracking-widest">3. Include Code Snippets</h4>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Wrap examples in triple backticks. RizziBizzi will generate "Fix the bug" or "What's the output" style questions.
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <h4 className="text-indigo-400 text-xs font-bold uppercase tracking-widest">4. Bullet Points</h4>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Use lists for features, pros/cons, or implementation steps. Perfect for multiple-choice generation.
+              <div className="space-y-1">
+                <h4 className="text-emerald-400 text-[10px] font-black uppercase tracking-widest">Code Anchors</h4>
+                <p className="text-emerald-50/60 text-xs leading-relaxed">
+                  Snippets in backticks allow the AI to generate "Debug this" questions.
                 </p>
               </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-slate-800">
-              <div className="bg-white/5 p-4 rounded-xl border border-white/10 italic text-slate-300 text-xs">
-                "A well-structured note yields a 40% better question hit-rate."
+            <div className="mt-10 pt-6 border-t border-emerald-800/50">
+              <div className="bg-emerald-50/5 p-4 rounded-2xl border border-emerald-800/50 italic text-emerald-100/40 text-[10px] leading-relaxed">
+                "Relaxed study improves recall by up to 25%. RizziBizzi is designed for focus."
               </div>
             </div>
-          </div>
-
-          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-            <h4 className="font-bold text-slate-800 mb-2">Why RizziBizzi?</h4>
-            <p className="text-slate-500 text-xs leading-relaxed">
-              Generic interview prep apps ask generic questions. RizziBizzi builds questions around <strong>your</strong> specific architecture, <strong>your</strong> team's stack, and <strong>your</strong> recent study sessions.
-            </p>
           </div>
         </div>
       </div>

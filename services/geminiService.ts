@@ -59,7 +59,7 @@ export const getClarification = async (question: Question, userQuery: string): P
   
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
-    contents: `Context: You are a technical interview coach. A student is reviewing a quiz question and needs further clarification.
+    contents: `Context: You are a technical interview coach. A student is reviewing a quiz question and needs further clarification. Use the Socratic method when appropriate.
     
     Question: ${question.question}
     Correct Answer: ${question.options[question.correctAnswerIndex]}
@@ -67,7 +67,7 @@ export const getClarification = async (question: Question, userQuery: string): P
     
     Student's specific question: "${userQuery}"
     
-    Task: Provide a concise, clear, and helpful response to the student's query. Use markdown for any code snippets. Focus strictly on explaining the technical concept related to their question.`,
+    Task: Provide a concise, clear, and helpful response. If the user is confused, try using a metaphor first to bridge the gap. Use markdown for code.`,
   });
 
   return response.text || "I'm sorry, I couldn't generate a clarification at this time.";
@@ -76,11 +76,11 @@ export const getClarification = async (question: Question, userQuery: string): P
 export const generateSummary = async (questions: Question[], difficulty: DifficultyLevel): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
   
-  const context = questions.map(q => `Concept: ${q.question}\nKey Detail: ${q.explanation}`).join('\n\n');
+  const context = questions.map(q => `Topic: ${q.question}\nExplanation: ${q.explanation}`).join('\n\n');
   
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
-    contents: `Based on the following quiz topics and explanations, create a comprehensive "Key Concepts Cheatsheet" in Markdown format.
+    contents: `Based on the following quiz results, create a "Retention-First Mastery Guide".
     
     Target Level: ${difficulty}
     
@@ -88,12 +88,13 @@ export const generateSummary = async (questions: Question[], difficulty: Difficu
     ${context}
     
     Requirements:
-    1. Use clear Markdown headings (##, ###).
-    2. Organize concepts logically.
-    3. For each concept, provide a 1-2 sentence summary and a brief "Pro-tip" for interviewers.
-    4. Include 1-2 generic code examples that summarize the overall technical patterns seen in the quiz.
-    5. Keep it professional, concise, and structured as a study guide.
-    6. Start with a title like "# Interview Mastery Guide: [Topics Name]"`,
+    1. Use HEADINGS (##) for topics.
+    2. FOR EACH TOPIC: 
+       - Provide a "Mental Hook" (a mnemonic device or simple metaphor to remember it).
+       - Provide a "Quick Re-call" (the 20% of info that gives 80% of the value).
+       - Provide a "Senior Perspective" (how this concept is used in real-world high-stakes scenarios).
+    3. Include 1 generic code example that merges multiple concepts.
+    4. Format as clean Markdown. Start with "# 🧠 Neural Mastery Guide: [Main Topic]"`,
   });
 
   return response.text || "Could not generate summary.";

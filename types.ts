@@ -5,7 +5,7 @@ export enum DifficultyLevel {
   SENIOR = 'Senior Developer'
 }
 
-export type FeedbackCategory = 'unclear' | 'incorrect' | 'improvement';
+export type ConfidenceLevel = 'low' | 'neutral' | 'high';
 
 export interface FollowUpResponse {
   questionId: string;
@@ -25,7 +25,8 @@ export interface Question {
 export interface QuizSession {
   questions: Question[];
   userAnswers: number[];
-  questionTimes: number[]; // Time in seconds spent on each question
+  userConfidences: ConfidenceLevel[];
+  questionTimes: number[]; 
   startTime: number;
   difficulty: DifficultyLevel;
   endTime?: number;

@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback } from 'react';
-import { AppState, QuizSession, DifficultyLevel } from './types';
+import { AppState, QuizSession, DifficultyLevel, ConfidenceLevel } from './types';
 import { generateQuiz } from './services/geminiService';
 import SetupScreen from './components/SetupScreen';
 import QuizScreen from './components/QuizScreen';
@@ -21,6 +21,7 @@ const App: React.FC = () => {
       setSession({
         questions,
         userAnswers: new Array(questions.length).fill(-1),
+        userConfidences: new Array(questions.length).fill('neutral'),
         questionTimes: new Array(questions.length).fill(0),
         startTime: Date.now(),
         difficulty: difficulty
@@ -33,15 +34,16 @@ const App: React.FC = () => {
     }
   }, []);
 
-  const handleFinish = useCallback((answers: number[], questionTimes: number[]) => {
+  const handleFinish = (answers: number[], confidences: ConfidenceLevel[], times: number[]) => {
     setSession(prev => prev ? { 
       ...prev, 
       userAnswers: answers, 
-      questionTimes: questionTimes,
+      userConfidences: confidences,
+      questionTimes: times,
       endTime: Date.now() 
     } : null);
     setState(AppState.RESULTS);
-  }, []);
+  };
 
   const handleRestart = useCallback(() => {
     setSession(null);
@@ -51,19 +53,19 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+      <header className="bg-white/80 backdrop-blur-md border-b border-emerald-100 sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={handleRestart}>
-            <div className="bg-indigo-600 p-2 rounded-lg">
+            <div className="bg-emerald-700 p-2 rounded-lg">
               <GraduationCap className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Rizzi<span className="text-indigo-600">Bizzi</span></h1>
+            <h1 className="text-xl font-bold text-slate-800 tracking-tight">Rizzi<span className="text-emerald-700">Bizzi</span></h1>
           </div>
           <div className="flex items-center gap-4">
-            <span className="hidden sm:inline text-sm text-slate-500 font-medium">Daily Prep Challenge</span>
-            <div className="h-8 w-px bg-slate-200 hidden sm:block"></div>
-            <div className="flex items-center gap-1 text-xs font-semibold text-slate-400 uppercase tracking-widest">
-              Powered by Gemini 3
+            <span className="hidden sm:inline text-sm text-slate-500 font-medium">Science of Learning</span>
+            <div className="h-8 w-px bg-emerald-100 hidden sm:block"></div>
+            <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-1 rounded-md">
+              Gemini 3 Powered
             </div>
           </div>
         </div>
@@ -72,7 +74,7 @@ const App: React.FC = () => {
       {/* Main Content */}
       <main className="flex-grow max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center gap-3">
+          <div className="mb-6 bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-xl flex items-center gap-3">
             <span className="font-bold">Error:</span> {error}
           </div>
         )}
@@ -94,10 +96,10 @@ const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-6 mt-auto">
+      <footer className="bg-emerald-50/30 border-t border-emerald-100 py-8 mt-auto">
         <div className="max-w-5xl mx-auto px-4 text-center">
-          <p className="text-sm text-slate-500">
-            &copy; {new Date().getFullYear()} RizziBizzi AI. Master your technical interviews with custom AI-generated quizzes.
+          <p className="text-sm text-emerald-800/60 font-medium">
+            &copy; {new Date().getFullYear()} RizziBizzi. Optimized for Cognitive Retention.
           </p>
         </div>
       </footer>
