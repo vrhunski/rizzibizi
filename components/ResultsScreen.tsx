@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { QuizSession, FollowUpResponse, Question } from '../types';
-import { getClarification, generateSummary } from '../services/geminiService';
+import { getClarification, generateSummary, SessionContext } from '../services/geminiService';
 import { Trophy, RotateCcw, Check, X, Code, Info, ChevronDown, ChevronUp, BarChart3, Sparkles, Send, MessageSquareText, BrainCircuit, Loader2, Download, BookOpen, Clock, Copy, CheckCircle, AlertCircle, Target, Zap, FileJson } from 'lucide-react';
 import Prism from 'prismjs';
 
@@ -11,6 +12,7 @@ import 'https://esm.sh/prismjs@1.29.0/components/prism-css';
 import 'https://esm.sh/prismjs@1.29.0/components/prism-json';
 import 'https://esm.sh/prismjs@1.29.0/components/prism-bash';
 import 'https://esm.sh/prismjs@1.29.0/components/prism-python';
+import 'https://esm.sh/prismjs@1.29.0/components/prism-java';
 
 interface Props {
   session: QuizSession;
@@ -43,7 +45,7 @@ const ResultsScreen: React.FC<Props> = ({ session, onRestart }) => {
   }, [session]);
 
   useEffect(() => {
-    if (expandedIndex !== null || summary) {
+    if (expandedIndex !== null || summary || Object.keys(tutorResponses).length > 0) {
       setTimeout(() => Prism.highlightAll(), 0);
     }
   }, [expandedIndex, tutorResponses, summary]);
@@ -72,11 +74,20 @@ const ResultsScreen: React.FC<Props> = ({ session, onRestart }) => {
     }
   };
 
-  const submitTutorRequest = async (question: Question) => {
+  const submitTutorRequest = async (question: Question, index: number) => {
     if (!userQuery.trim() || isAsking) return;
     setIsAsking(true);
+    
+    const context: SessionContext = {
+      difficulty: session.difficulty,
+      topics: session.questions.map(q => q.question.split('?')[0].substring(0, 40)),
+      userAnsweredCorrectly: session.userAnswers[index] === question.correctAnswerIndex,
+      userConfidence: session.userConfidences[index],
+      overallScore: `${score}/${session.questions.length}`
+    };
+
     try {
-      const response = await getClarification(question, userQuery);
+      const response = await getClarification(question, userQuery, context);
       setTutorResponses(prev => ({
         ...prev,
         [question.id]: {
@@ -126,15 +137,18 @@ const ResultsScreen: React.FC<Props> = ({ session, onRestart }) => {
 
   const cleanCode = (code: string) => {
     if (!code) return '';
+    // Standardize newlines, remove Markdown markers, but strictly preserve internal indentation
+    // We only trim the outside, not individual lines.
     return code
       .replace(/^```(?:\w+)?\n?/, '')
       .replace(/\n?```$/, '')
+      .replace(/\r\n/g, '\n')
       .trim();
   };
 
   return (
     <div className="max-w-4xl mx-auto space-y-12 animate-in zoom-in-95 duration-700 pb-20">
-      {/* Visual Score Header - Cognitive Focus */}
+      {/* Visual Score Header */}
       <div className="bg-white rounded-[3rem] border border-emerald-100/50 shadow-2xl shadow-emerald-900/5 overflow-hidden">
         <div className="bg-[#1E2D24] p-16 text-center text-white relative">
           <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none overflow-hidden">
@@ -187,7 +201,7 @@ const ResultsScreen: React.FC<Props> = ({ session, onRestart }) => {
         </div>
       </div>
 
-      {/* Neural Mastery Guide - The Learning Artifact */}
+      {/* Neural Mastery Guide */}
       <div className="bg-[#121816] rounded-[3rem] border border-white/5 shadow-2xl overflow-hidden group">
         <div className="bg-emerald-950/40 p-10 flex flex-col md:flex-row items-center justify-between border-b border-white/5 gap-6">
           <div className="flex items-center gap-6">
@@ -224,7 +238,7 @@ const ResultsScreen: React.FC<Props> = ({ session, onRestart }) => {
         </div>
       </div>
 
-      {/* Review Questions - Minimalist and Clear */}
+      {/* Review Questions */}
       <div className="space-y-6">
         <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] pl-4">Detailed Retrospective</h3>
         {session.questions.map((q, idx) => {
@@ -271,7 +285,7 @@ const ResultsScreen: React.FC<Props> = ({ session, onRestart }) => {
                   
                   <div className="bg-[#F9FBF9] rounded-[2rem] p-8 border border-emerald-100/30 relative">
                     <h4 className="text-[10px] font-black text-emerald-900 mb-4 flex items-center gap-2 uppercase tracking-[0.2em]"><Info className="w-4 h-4" /> Concept Calibration</h4>
-                    <p className="text-emerald-900/70 text-base leading-relaxed font-medium">{q.explanation}</p>
+                    <p className="text-emerald-900/70 text-base leading-relaxed font-medium whitespace-pre-line">{q.explanation}</p>
                     
                     {!hasResponse && (
                         <button 
@@ -305,7 +319,7 @@ const ResultsScreen: React.FC<Props> = ({ session, onRestart }) => {
                                 Cancel
                             </button>
                             <button 
-                                onClick={() => submitTutorRequest(q)}
+                                onClick={() => submitTutorRequest(q, idx)}
                                 disabled={!userQuery.trim() || isAsking}
                                 className={`flex items-center gap-3 px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${!userQuery.trim() || isAsking ? 'bg-slate-200 text-slate-400' : 'bg-[#1E2D24] text-white shadow-xl hover:shadow-emerald-900/20'}`}
                             >
@@ -337,7 +351,7 @@ const ResultsScreen: React.FC<Props> = ({ session, onRestart }) => {
                             </div>
                             <div className="text-base leading-relaxed prose prose-invert max-w-none">
                                 {hasResponse.aiResponse.split('\n').map((para, pIdx) => (
-                                    para.trim() ? <p key={pIdx} className="mb-4 text-emerald-50/90">{para}</p> : null
+                                    para.trim() ? <p key={pIdx} className="mb-4 text-emerald-50/90 leading-relaxed">{para}</p> : null
                                 ))}
                             </div>
                         </div>
@@ -356,8 +370,8 @@ const ResultsScreen: React.FC<Props> = ({ session, onRestart }) => {
                             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/20"></div>
                         </div>
                       </div>
-                      <pre className="language-javascript !m-0 rounded-none overflow-x-auto whitespace-pre">
-                        <code className="language-javascript">
+                      <pre className="language-java !m-0 rounded-none overflow-x-auto">
+                        <code className="language-java">
                           {cleanCode(q.codeExample)}
                         </code>
                       </pre>

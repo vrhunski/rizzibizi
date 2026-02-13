@@ -34,10 +34,17 @@
             background: #121816 !important; /* Deeper Forest Dark */
             font-family: 'Fira Code', monospace !important;
             font-size: 0.875rem !important;
-            white-space: pre !important; 
+            /* Ensure multi-line and wrapping while strictly preserving indentation */
+            white-space: pre-wrap !important;
             word-spacing: normal !important;
             word-break: normal !important;
+            overflow-wrap: break-word !important;
             border-left: 4px solid var(--accent-amber);
+            tab-size: 4;
+        }
+        code[class*="language-"] {
+            white-space: pre-wrap !important;
+            font-family: 'Fira Code', monospace !important;
         }
         .sage-gradient {
             background: linear-gradient(135deg, #2D4F3F 0%, #1E2D24 100%);
