@@ -6,6 +6,7 @@ export enum DifficultyLevel {
 }
 
 export type ConfidenceLevel = 'low' | 'neutral' | 'high';
+export type QuestionType = 'logic' | 'conceptual';
 
 export interface FollowUpResponse {
   questionId: string;
@@ -20,6 +21,7 @@ export interface Question {
   correctAnswerIndex: number;
   explanation: string;
   codeExample?: string;
+  type: QuestionType;
 }
 
 export interface QuizSession {

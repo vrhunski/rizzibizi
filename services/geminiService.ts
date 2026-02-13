@@ -21,7 +21,7 @@ export const generateQuiz = async (markdownContent: string, difficulty: Difficul
 
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
-    contents: `You are a Senior Learning Scientist and Technical Interviewer. Your goal is to create a quiz that maximizes "Active Recall" and "Desirable Difficulty" based on the provided material.
+    contents: `You are a Senior Learning Scientist and Technical Interviewer. Your goal is to create a quiz that maximizes "Active Recall" and "Desirable Difficulty".
 
     Material to analyze:
     ${markdownContent}
@@ -29,23 +29,22 @@ export const generateQuiz = async (markdownContent: string, difficulty: Difficul
     Target Difficulty: ${difficulty}
     Difficulty Focus: ${difficultyPrompts[difficulty]}
     
-    STRICT QUESTION CONSTRUCTION RULES (BRAIN SCIENCE PRINCIPLES):
-    1. NO ROTE DEFINITIONS: Avoid questions like "What is X?". Instead, use "Given Scenario Y, how would X behave?".
-    2. FINE-GRAINED DISCRIMINATION: Distractors (wrong answers) MUST be plausible misconceptions or common mistakes developers actually make.
-    3. THE 30% LOGIC CHALLENGE RULE: 
-       - Exactly 30% of the ${questionCount} questions MUST be "Logic Challenges" (Code-based analysis).
-       - For these 30%, you MUST provide a relevant snippet in 'codeExample'.
-       - FOR THE CODE EXAMPLE: You MUST use Java syntax. It MUST be multi-line, perfectly indented, and readable. DO NOT put code on a single line.
-       - For the remaining 70% of questions, the 'codeExample' field MUST be an empty string.
-    4. ANCHORING: Connect new concepts to real-world performance or security implications.
-    5. CLARITY: Keep the question stem concise to reduce unnecessary cognitive load.
+    STRICT QUESTION CLASSIFICATION:
+    - You must assign a 'type' to every question: 'logic' or 'conceptual'.
+    - 'logic': The student MUST analyze the provided code blueprint to find the answer (tracing, debugging, output prediction).
+    - 'conceptual': The question is about theory, best practices, or "Why" (the code blueprint is for visual context/reference).
+
+    STRICT CONSTRUCTION RULES:
+    1. EVERY SINGLE QUESTION (${questionCount} out of ${questionCount}) MUST include a 'codeExample' (Logical Blueprint) in Java.
+    2. Snippets must be multi-line, properly indented, and highly readable.
+    3. Ensure a mix of both 'logic' and 'conceptual' questions based on the material.
+    4. Distractors MUST be plausible misconceptions.
 
     Requirements:
     - Generate exactly ${questionCount} questions.
     - Provide 4 options per question.
     - Provide a 'correctAnswerIndex' (0-3).
-    - Provide an 'explanation' that details WHY the correct answer is correct and WHY the most likely distractor is incorrect.
-    - Ensure 'codeExample' is only populated for the 30% of questions intended as Logic Challenges.`,
+    - Provide an 'explanation' detailing WHY the correct answer is correct.`,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
@@ -57,9 +56,10 @@ export const generateQuiz = async (markdownContent: string, difficulty: Difficul
             options: { type: Type.ARRAY, items: { type: Type.STRING } },
             correctAnswerIndex: { type: Type.INTEGER },
             explanation: { type: Type.STRING },
-            codeExample: { type: Type.STRING, description: "Only populate for logic challenges, otherwise empty string. Must be multi-line Java." }
+            codeExample: { type: Type.STRING },
+            type: { type: Type.STRING, enum: ['logic', 'conceptual'] }
           },
-          required: ["question", "options", "correctAnswerIndex", "explanation", "codeExample"]
+          required: ["question", "options", "correctAnswerIndex", "explanation", "codeExample", "type"]
         }
       }
     }
@@ -81,62 +81,27 @@ export const getClarification = async (
   context: SessionContext
 ): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-  
-  const performanceStatus = context.userAnsweredCorrectly 
-    ? `The student answered CORRECTLY with ${context.userConfidence} confidence.`
-    : `The student answered INCORRECTLY with ${context.userConfidence} confidence.`;
-
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
-    contents: `You are the "RizziBizzi Socratic Mentor". You have a deep memory of the current study session.
-    
-    SESSION CONTEXT:
-    - Current Difficulty: ${context.difficulty}
-    - Student's Overall Performance: ${context.overallScore}
-    - Topics Covered in this Session: ${context.topics.join(', ')}
-    
-    SPECIFIC QUESTION CONTEXT:
-    - Question: "${question.question}"
-    - Correct Answer: "${question.options[question.correctAnswerIndex]}"
-    - Student Performance on this question: ${performanceStatus}
-    
-    STUDENT'S QUERY:
-    "${userQuery}"
-    
-    YOUR TASK:
-    1. Respond as a mentor who has been watching the student's entire journey. 
-    2. If they got it wrong with "High Confidence", address the "Illusion of Competence" gently.
-    3. Use the Socratic method: explain the underlying mental model instead of just repeating facts.
-    4. Connect the explanation to other topics from the session context above.
-    5. Be concise, technical, and use Markdown for all code snippets. ENSURE CODE IS MULTI-LINE AND INDENTED.`,
+    contents: `Socratic Assistant.
+    Question: "${question.question}"
+    Type: "${question.type}"
+    Blueprint: "${question.codeExample}"
+    User Query: "${userQuery}"
+    Goal: Explain the mental model clearly. Use Markdown.`,
   });
-
   return response.text || "I'm sorry, I couldn't generate a clarification at this time.";
 };
 
 export const generateSummary = async (questions: Question[], difficulty: DifficultyLevel): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-  
   const context = questions.map(q => `Topic: ${q.question}\nExplanation: ${q.explanation}`).join('\n\n');
-  
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
-    contents: `Based on the following quiz results, create a "Retention-First Mastery Guide".
-    
-    Target Level: ${difficulty}
-    
-    Content Context:
-    ${context}
-    
-    Requirements:
-    1. Use HEADINGS (##) for topics.
-    2. FOR EACH TOPIC: 
-       - Provide a "Mental Hook" (a mnemonic device or simple metaphor to remember it).
-       - Provide a "Quick Re-call" (the 20% of info that gives 80% of the value).
-       - Provide a "Senior Perspective" (real-world high-stakes scenarios).
-    3. Include 1 high-level Java code example that merges multiple concepts. Ensure multi-line formatting.
-    4. Format as clean Markdown. Start with "# 🧠 Neural Mastery Guide"`,
+    contents: `Based on the following quiz results, create a "Retention-First Mastery Guide" in Markdown.
+    Difficulty: ${difficulty}
+    Context: ${context}
+    Include a "Mental Hook" and "Senior Perspective" for each core topic.`,
   });
-
   return response.text || "Could not generate summary.";
 };

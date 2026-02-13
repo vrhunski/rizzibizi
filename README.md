@@ -1,29 +1,33 @@
-# RizziBizzi 🚀
 
-**RizziBizzi** is an intelligent, AI-powered technical interview preparation tool designed for developers. It transforms your raw Markdown study notes into interactive, high-quality technical quizzes tailored to your specific experience level.
+# RizziBizzi 🧠🚀
 
-## 📖 About
+**RizziBizzi** is a high-performance technical interview preparation engine. Unlike traditional "flashcard" apps, RizziBizzi is built on the pillars of **Cognitive Science** and **Educational Psychology** to ensure that information moves from short-term memory into long-term mastery.
 
-Generic interview prep apps often ask repetitive, out-of-context questions. RizziBizzi bridges this gap by using **Google Gemini AI** to analyze your personal study materials—whether they are architecture notes, stack-specific documentation, or textbook summaries—and generating challenging tests that actually matter to your learning journey.
+## 📖 The Science of Learning
+
+RizziBizzi isn't just an AI quizzer; it’s a cognitive simulator designed to fight the "Illusion of Competence." We integrate several key scientific principles:
+
+- **Active Recall**: Instead of passive re-reading, RizziBizzi forces your brain to retrieve information. This strengthens neural pathways more effectively than any other study method.
+- **Desirable Difficulty**: Based on the research of Robert Bjork, the AI generates questions at the "sweet spot" of challenge. If it's too easy, you don't learn; if it's too hard, you give up. We calibrate to your level (Junior, Medium, Senior).
+- **Metacognitive Calibration**: After every answer, we ask for your **Confidence Level**. This forces you to evaluate your own knowledge state. Our analytics then highlight "Illusions"—topics where you felt confident but were actually incorrect.
+- **Socratic Mentorship**: Our AI Tutor doesn't just give answers. It uses the Socratic method to lead you toward the correct mental model, asking probing questions and connecting new info to existing knowledge.
+- **Dual Coding & Contextual Anchoring**: Every question is accompanied by a **Logical Blueprint** (Java code). By seeing the concept and the implementation side-by-side, your brain forms stronger, multi-modal memories.
 
 ## ✨ Key Features
 
-- **Custom Quiz Generation**: Instantly creates 5, 10, 15, or 20 questions based on your provided Markdown content.
-- **Experience Levels**: Tailor the difficulty to **Junior**, **Medium**, or **Senior** developer personas.
-- **AI Tutor Integration**: Get stuck on a result? Ask the built-in AI tutor for deeper clarifications on any question.
-- **Code Examples**: Questions often include contextual code snippets to test your reading and debugging skills.
-- **Mastery Cheatsheet**: Automatically synthesizes your test results into a concise Markdown cheatsheet for final review.
-- **Local Persistence**: Automatically saves your Markdown content to `localStorage` so you never lose your progress between sessions.
-- **Privacy First**: Your notes stay in your browser; they are only sent to the Gemini API for content generation.
+- **Logic vs. Conceptual Classification**: Questions are tagged so you know if you're testing your **trace-and-debug** skills (Logic) or your **architectural/theoretical** understanding (Conceptual).
+- **Mandatory Logical Blueprints**: Every question includes a perfectly formatted, multi-line Java snippet to ground abstract theory in concrete code.
+- **Neural Mastery Guide**: At the end of a session, get a synthesized Markdown summary featuring "Mental Hooks" (mnemonics) and "Senior Perspectives" for high-stakes recall.
+- **Socratic Follow-ups**: Engage in a deep-dive conversation with the AI about any specific question to clarify edge cases.
+- **Metacognition Matrix**: A post-session breakdown that categorizes your performance into Mastered, Illusions, Lucky, and Gaps.
 
 ## 🛠️ Tech Stack
 
-- **Framework**: React 19 (Functional Components & Hooks)
-- **AI Engine**: [Google Generative AI (Gemini 3 Flash)](https://ai.google.dev/)
-- **Styling**: Tailwind CSS
+- **Framework**: React 19 (Modern Hooks & Functional Architecture)
+- **AI Engine**: **Google Gemini 2.5/3** (Utilizing Flash for speed and Pro for complex reasoning)
+- **Syntax Highlighting**: Prism.js with custom Tomorrow Night integration
+- **Styling**: Tailwind CSS (Sage & Forest color palette for reduced cognitive load)
 - **Icons**: Lucide React
-- **Syntax Highlighting**: Prism.js
-- **Icons & UI**: Lucide React
 
 ## 🚀 Getting Started
 
@@ -31,9 +35,8 @@ Generic interview prep apps often ask repetitive, out-of-context questions. Rizz
 
 - A modern web browser.
 - A **Google Gemini API Key**. You can obtain one from the [Google AI Studio](https://aistudio.google.com/).
-- A local development server (like Vite, Live Server, or `serve`).
 
-### Installation & Local Development
+### Installation
 
 1. **Clone the repository**:
    ```bash
@@ -41,45 +44,20 @@ Generic interview prep apps often ask repetitive, out-of-context questions. Rizz
    cd rizzibizzi
    ```
 
-2. **Setup Environment Variables**:
-   Create a `.env` file in the root directory and add your API key:
-   ```env
-   API_KEY=your_gemini_api_key_here
-   ```
+2. **Setup Environment**:
+   Ensure your environment has access to your `API_KEY`. The app is designed to be served as a static site using modern ES6 modules.
 
 3. **Running Locally**:
-   Since this project uses modern ES6 modules and an `importmap`, you can serve it using any static file server.
-   
-   If you have Node.js installed:
    ```bash
-   # Using npx and serve
    npx serve .
    ```
-   Or if you prefer a dev-specific tool:
-   ```bash
-   # Using Vite (Recommended for production builds)
-   npm install vite
-   npx vite
-   ```
 
-4. **Open the App**:
-   Navigate to `http://localhost:3000` (or the port provided by your server) to start prepping!
+## 📝 Best Practices for Your Markdown Notes
 
-## 📝 Best Practices for Content
-
-For the best results with the AI generator, follow these Markdown tips:
-- **Use Clear Headings**: Use `##` or `###` to separate different technical topics.
-- **Include Code**: Wrap your code snippets in triple backticks (e.g., \` ```java \`).
-- **Be Specific**: Detailed descriptions lead to more nuanced and challenging questions.
-- **Use Lists**: Bullet points are excellent for generating "Which of the following..." style questions.
-
-## 🤝 Contributing
-
-Contributions are welcome! If you have ideas for new features or improvements, feel free to open an issue or submit a pull request.
-
-## ⚖️ License
-
-Distributed under the MIT License. See `LICENSE` for more information.
+To help the Cognitive Engine build the best possible quiz:
+- **Use Hierarchical Headings**: `## Topic` helps the AI identify core concepts.
+- **Provide Context**: Don't just list facts. Explain *why* a design pattern is used or *when* a specific collection type is preferred.
+- **Include Snippets**: Even small code examples in your notes act as "seeds" for the AI to grow complex Logic Challenges.
 
 ---
-*Built with ❤️ for the developer community by RizziBizzi AI.*
+*Built with ❤️ for the developer community. Optimized for the human brain.*

@@ -1,13 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { Question, ConfidenceLevel } from '../types';
-import { ChevronRight, ChevronLeft, CheckCircle2, Hourglass, BrainCircuit, Code, Zap } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Hourglass, BrainCircuit, Code, Zap, BookOpen } from 'lucide-react';
 import Prism from 'prismjs';
 
 // Import essential languages for quiz-time highlighting
-import 'https://esm.sh/prismjs@1.29.0/components/prism-javascript';
-import 'https://esm.sh/prismjs@1.29.0/components/prism-typescript';
-import 'https://esm.sh/prismjs@1.29.0/components/prism-python';
 import 'https://esm.sh/prismjs@1.29.0/components/prism-java';
 
 interface Props {
@@ -33,7 +30,6 @@ const QuizScreen: React.FC<Props> = ({ questions, onFinish }) => {
     return () => clearInterval(interval);
   }, [currentIndex]);
 
-  // Re-run Prism when question changes or code is rendered
   useEffect(() => {
     if (step === 'answer') {
       setTimeout(() => Prism.highlightAll(), 0);
@@ -42,7 +38,6 @@ const QuizScreen: React.FC<Props> = ({ questions, onFinish }) => {
 
   const currentQuestion = questions[currentIndex];
   const progress = ((currentIndex + 1) / questions.length) * 100;
-  const isCodeChallenge = !!currentQuestion.codeExample;
 
   const handleSelectOption = (optionIndex: number) => {
     const newAnswers = [...answers];
@@ -72,7 +67,6 @@ const QuizScreen: React.FC<Props> = ({ questions, onFinish }) => {
 
   const cleanCode = (code: string) => {
     if (!code) return '';
-    // Preserve formatting while removing markdown block wrappers
     return code
       .replace(/^```(?:\w+)?\n?/, '')
       .replace(/\n?```$/, '')
@@ -82,7 +76,6 @@ const QuizScreen: React.FC<Props> = ({ questions, onFinish }) => {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      {/* HUD - Heads Up Display */}
       <div className="bg-white p-5 rounded-3xl border border-emerald-100 shadow-sm flex items-center justify-between">
         <div className="flex items-center gap-4 flex-1 pr-6">
           <div className="text-xs font-black text-emerald-800 uppercase tracking-widest whitespace-nowrap">
@@ -105,11 +98,17 @@ const QuizScreen: React.FC<Props> = ({ questions, onFinish }) => {
           {step === 'answer' ? (
             <div className="animate-in fade-in slide-in-from-right-4 duration-300 space-y-8">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">Question Focus</span>
-                {isCodeChallenge && (
-                  <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-100 animate-pulse">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">Contextual Analysis</span>
+                
+                {currentQuestion.type === 'logic' ? (
+                  <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-100 shadow-sm">
                     <Zap className="w-3 h-3" />
                     <span className="text-[9px] font-black uppercase tracking-widest">Logic Challenge</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-100 shadow-sm">
+                    <BookOpen className="w-3 h-3" />
+                    <span className="text-[9px] font-black uppercase tracking-widest">Conceptual</span>
                   </div>
                 )}
               </div>
@@ -118,18 +117,16 @@ const QuizScreen: React.FC<Props> = ({ questions, onFinish }) => {
                 {currentQuestion.question}
               </h3>
 
-              {isCodeChallenge && (
-                <div className="rounded-2xl overflow-hidden border border-emerald-900/10 shadow-lg my-6">
-                   <div className="bg-[#121816] px-4 py-2 border-b border-white/5 flex items-center gap-2 text-[9px] font-black uppercase text-emerald-400/60 tracking-widest">
-                    <Code className="w-3 h-3" /> Analyze Logic
-                  </div>
-                  <pre className="language-java !m-0 !p-6 !text-xs !rounded-none">
-                    <code className="language-java">
-                      {cleanCode(currentQuestion.codeExample!)}
-                    </code>
-                  </pre>
+              <div className="rounded-2xl overflow-hidden border border-emerald-900/10 shadow-lg my-6">
+                 <div className="bg-[#121816] px-4 py-2 border-b border-white/5 flex items-center gap-2 text-[9px] font-black uppercase text-emerald-400/60 tracking-widest">
+                  <Code className="w-3 h-3" /> Logical Blueprint
                 </div>
-              )}
+                <pre className="language-java !m-0 !p-6 !text-xs !rounded-none">
+                  <code className="language-java">
+                    {cleanCode(currentQuestion.codeExample || '')}
+                  </code>
+                </pre>
+              </div>
 
               <div className="grid gap-3 pt-4">
                 {currentQuestion.options.map((option, idx) => (
@@ -156,7 +153,7 @@ const QuizScreen: React.FC<Props> = ({ questions, onFinish }) => {
               </div>
               <div>
                 <h3 className="text-3xl font-black text-[#1E2D24] mb-3 tracking-tight">Metacognitive Check</h3>
-                <p className="text-slate-500 text-sm font-medium">How confident are you that this logic is correct?</p>
+                <p className="text-slate-500 text-sm font-medium">How certain are you of this logical mapping?</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 w-full max-w-lg">
                 {[
@@ -174,10 +171,7 @@ const QuizScreen: React.FC<Props> = ({ questions, onFinish }) => {
                   </button>
                 ))}
               </div>
-              <button 
-                onClick={() => setStep('answer')}
-                className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] hover:text-emerald-600 transition-colors"
-              >
+              <button onClick={() => setStep('answer')} className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] hover:text-emerald-600 transition-colors">
                 Re-evaluate Decision
               </button>
             </div>
@@ -186,14 +180,13 @@ const QuizScreen: React.FC<Props> = ({ questions, onFinish }) => {
 
         <div className="p-10 bg-emerald-50/20 border-t border-emerald-50/50 flex items-center justify-between">
           <button
-            onClick={() => { setStep('answer'); handlePrev(); }}
+            onClick={() => { setStep('answer'); if (currentIndex > 0) setCurrentIndex(currentIndex - 1); }}
             disabled={currentIndex === 0}
             className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-black uppercase tracking-widest transition-all text-[10px] ${
               currentIndex === 0 ? 'text-slate-300 cursor-not-allowed' : 'text-emerald-700 hover:text-emerald-900 bg-white border border-emerald-100 shadow-sm'
             }`}
           >
-            <ChevronLeft className="w-4 h-4" />
-            Rewind
+            <ChevronLeft className="w-4 h-4" /> Rewind
           </button>
           <div className="hidden sm:flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
@@ -205,10 +198,6 @@ const QuizScreen: React.FC<Props> = ({ questions, onFinish }) => {
       </div>
     </div>
   );
-  
-  function handlePrev() {
-    if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
-  }
 };
 
 export default QuizScreen;
